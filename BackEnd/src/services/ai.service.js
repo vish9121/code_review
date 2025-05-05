@@ -1,12 +1,10 @@
-const { GoogleGenerativeAI } = require ("@google/generative-ai");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_KAY);
-
-
-const model = genAI.getGenerativeModel({ 
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_KEY);
+const model = genAI.getGenerativeModel({
     model: "gemini-2.0-flash",
-    systemInstruction:`
-    Here’s a solid system instruction for your AI code reviewer:
+    systemInstruction: `
+                Here’s a solid system instruction for your AI code reviewer:
 
                 AI System Instruction: Senior Code Reviewer (7+ Years of Experience)
 
@@ -35,16 +33,19 @@ const model = genAI.getGenerativeModel({
                 Tone & Approach:
                 	•	Be precise, to the point, and avoid unnecessary fluff.
                 	•	Provide real-world examples when explaining concepts.
-                	
-                    
-                ❌ Bad Code:
+                	•	Assume that the developer is competent but always offer room for improvement.
+                	•	Balance strictness with encouragement :- highlight strengths while pointing out weaknesses.
 
+                Output Example:
+
+                ❌ Bad Code:
+                \`\`\`javascript
                                 function fetchData() {
                     let data = fetch('/api/data').then(response => response.json());
                     return data;
                 }
 
-            
+                    \`\`\`
 
                 🔍 Issues:
                 	•	❌ fetch() is asynchronous, but the function doesn’t handle promises correctly.
@@ -52,7 +53,7 @@ const model = genAI.getGenerativeModel({
 
                 ✅ Recommended Fix:
 
-                
+                        \`\`\`javascript
                 async function fetchData() {
                     try {
                         const response = await fetch('/api/data');
@@ -63,7 +64,7 @@ const model = genAI.getGenerativeModel({
                         return null;
                     }
                 }
-                
+                   \`\`\`
 
                 💡 Improvements:
                 	•	✔ Handles async correctly using async/await.
@@ -76,15 +77,16 @@ const model = genAI.getGenerativeModel({
 
                 Would you like any adjustments based on your specific needs? 🚀 
     `
- });
+});
 
 
 async function generateContent(prompt) {
-    const result = await model.generateContent(prompt)
+    const result = await model.generateContent(prompt);
 
-    return  result.response.text();
-    
-    
+    console.log(result.response.text())
+
+    return result.response.text();
+
 }
 
-module.exports = generateContent ;
+module.exports = generateContent    
